@@ -1,0 +1,157 @@
+ECE 391
+tacOS
+Bug Log
+____________________________________________________________________________
+Checkpoint 1:
+
+
+Bug1:
+Date: 10/14
+Bug Description: Page faults when fast changing and typing.
+How to fix: Add a ASM wrapper for the handler function to save caller-saved registers.
+How long: 2 hours
+
+
+Bug2:
+Date: 10/15
+Bug Description: Paging didn’t work because we have to set paging before enabling it.
+How to fix: cr0 must be set after cr3 and cr4 are set.
+How long: 6 hours
+
+
+Bug3:
+Date: 10/16
+Bug Description: Keyboard subroutine fails to distinguish capitalization of letters.
+How to fix: The transition between lowercase and uppercase suffers corner cases when it comes to letters like ‘a’ or ‘z’, which is solved by constructing two tables.
+How long: 2 hours
+
+____________________________________________________________________________
+Checkpoint 2:
+
+
+Bug1:
+Date: 10/21
+Bug Description: Terminal read doesn’t jump out of while loop when enter flag is set.
+How to fix: Enter flag is used somewhere else so the problem is solved after we change the name.
+How long: 2 hours
+
+
+Bug2:
+Date: 10/22
+Bug Description: File system page faults.
+How to fix: Buffer size was too small, memory was not allocated for test buffers, position of mod_start is only “present” before page_init (save addr).
+How long: 6 hours
+
+
+Bug3:
+Date: 10/22
+Bug Description: Buffer overflow for keyboard buffer.
+How to fix: if nbytes > keyboard_buf_length, nbytes = keyboard_buf_length.
+How long: 4 hours
+
+
+Bug4:
+Date: 10/23
+Bug Description: Terminal_read cannot take more than 8 characters due to using argument nbytes in the wrong way.
+How to fix: Combine the null-terminator method and specified character method to determine when the string ends.
+How long: 1 hour
+
+
+Bug5:
+Date: 10/23
+Bug Description: The buffer will overflow when we type very long strings, which results into echo displaying strings that have 1 fewer character than what we have typed.
+How to fix: Modified the string length check method by subtracting one space for null-terminator.
+How long: 2 hours
+
+____________________________________________________________________________
+Checkpoint 3:
+
+
+Bug1:
+Date: 11/12
+Bug Description: Page fault on IRET.
+How to fix: Not reading entrypoint correctly. From *((uint32_t *)address+24*8) to address[24] + address[25] << 8 + … (mainly due to Little Endian), another solution: (uint32_t *)address[6]
+How long: 5 hours
+
+
+Bug2:
+Date: 11/12
+Bug Description: Page fault after HALT
+How to fix: PCB FOps was shared, so when we destroyed the PCB and set the FOps to NULL, the FOps for other PCBs were also set to NULL causing a page fault
+How long: 6 hours
+
+
+Bug3:
+Date: 11/13
+Bug Description: Return value for HALT in EAX is changed after JMP
+How to fix: Don’t keep inline assembly in separate lines. Put inline assembly in one asm volatile(); because %0 uses any general register and it happened to choose EAX
+How long: 2 hours
+
+____________________________________________________________________________
+Checkpoint 4:
+
+
+Bug1:
+Date: 11/22
+Bug Description: Fd suddenly becomes 10 after verylargetextwithverylongname.tx
+How to fix: Added null terminator to the end of string, return buffer size instead of name size.
+How long: 9 hours
+
+
+Bug2:
+Date: 11/27
+Bug Description: Vidmap function leads to crashing in system execution.
+How to fix: Didn’t handle check for malicious input which isn’t pointing to the user space.
+How long: 1 hour
+
+____________________________________________________________________________
+Checkpoint 5:
+
+
+Bug1:
+Date: 12/3
+Bug Description: Scheduling didn’t work causing many small bugs
+How to fix: Save ESP and EBP upon entering the function directly into the terminal struct and only update it to the new values when just about to exit function
+How long: 7 hours
+
+
+Bug2:
+Date:12/3
+Bug Description: When switching terminals, running fish on 1st terminal doesn’t show up on other terminals, but running fish on 2nd terminal shows up on 3rd terminal
+How to fix: Don’t set paging for vidmap in the vidmap function, set it when initializing paging
+How long: 2 hours
+
+
+Bug3:
+Date: 12/3
+Bug Description: Cursor jumps around when counter is running on one terminal
+How to fix: Only update cursor for terminal shown on screen
+How long: 2 hours
+
+
+Bug4:
+Date: 12/4
+Bug Description: Execute counter in terminal 1 and then switch to terminal 2 or 3 and then type in the buffer, the content will overwrite “391OS >”.
+How to fix: Forget to disable the interrupt while we are in the terminal write function, which could cause the writing action to be interrupted during the process, thus messing up the functionality.
+How long: 5 hours
+
+
+Bug5:
+Date: 12/4
+Bug Description: Clear screen doesn’t print “391OS> “ after clearing screen
+How to fix: Properly modify clear function and deal with corner cases
+How long: 3 hours
+
+
+Bug6:
+Date: 12/4
+Bug Description: Fish runs faster on terminal 1 than terminal 2
+How to fix: RTC signal is not being delivered to all terminals, solution: make there be 3 RTC_INT flags (one per terminal)
+How long: 2 hours
+
+
+Bug7:
+Date: 12/4
+Bug Description: Pingpong gets stuck every few seconds
+How to fix: Initialize all rtc_init_flags and change for all handlers
+How long: 1 hour
