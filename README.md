@@ -1,6 +1,7 @@
 tacOS
 ======================
-Operating System tacOS for ECE 391
+Operating System tacOS for ECE 391.
+All working code of the kernel is in student-distrib.
 
 createfs
 -----------
